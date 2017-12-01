@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <conio.h>
 #include "../bass_gapless/bass_gapless.h"
 #include "../bass_gapless/queue.h"
 
@@ -27,14 +26,14 @@ int main(int argc, char **argv) {
 	}
 
 	//Create a DECODE stream for a crappy song.
-	source_channel_1 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\01 Botanical Dimensions.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
+	source_channel_1 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\01 Botanical Dimensions.m4a", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
 	if (source_channel_1 == 0) {
 		printf("Failed to create source stream: %d\n", BASS_ErrorGetCode());
 		return 1;
 	}
 
 	//Create a DECODE stream for another crappy song.
-	source_channel_2 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\02 Outer Shpongolia.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
+	source_channel_2 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\02 Outer Shpongolia.m4a", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
 	if (source_channel_2 == 0) {
 		printf("Failed to create source stream: %d\n", BASS_ErrorGetCode());
 		return 1;
@@ -93,15 +92,15 @@ int main(int argc, char **argv) {
 			break;
 		}
 
-		if (_kbhit()) {
-			_getch();
-			break;
-		}
-
 		//Calculate the source position and write it out.
 		channel_position = BASS_ChannelGetPosition(playback_channel, BASS_POS_BYTE);
 		channel_position_seconds = BASS_ChannelBytes2Seconds(playback_channel, channel_position);
 		printf("%d/%d\n", (int)channel_position_seconds, (int)channel_length_seconds);
+
+		if (channel_position_seconds >= 20) {
+			break;
+		}
+
 		Sleep(1000);
 	} while (TRUE);
 

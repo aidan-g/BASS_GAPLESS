@@ -17,5 +17,9 @@ BOOL BASSGAPLESSASIODEF(BASS_GAPLESS_ASIO_ChannelEnable)(BOOL input, DWORD chann
 }
 
 DWORD CALLBACK asio_gapless_stream_proc(BOOL input, DWORD channel, void *buffer, DWORD length, void *user) {
-	return gapless_stream_proc(buffer, length);
+	DWORD result = gapless_stream_proc(buffer, length);
+	if (result == BASS_STREAMPROC_END) {
+		result = 0;
+	}
+	return result;
 }
