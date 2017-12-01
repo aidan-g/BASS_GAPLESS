@@ -29,6 +29,7 @@
     <ClInclude Include="bass_gapless.h" />
     <ClInclude Include="buffer.h" />
     <ClInclude Include="gapless_stream.h" />
+    <ClInclude Include="gapless_stream_event.h" />
     <ClInclude Include="gapless_stream_registry.h" />
     <ClInclude Include="queue.h" />
   </ItemGroup>
@@ -36,6 +37,7 @@
     <ClCompile Include="bass_gapless.c" />
     <ClCompile Include="buffer.c" />
     <ClCompile Include="gapless_stream.c" />
+    <ClCompile Include="gapless_stream_event.c" />
     <ClCompile Include="gapless_stream_registry.c" />
     <ClCompile Include="queue.c" />
   </ItemGroup>
