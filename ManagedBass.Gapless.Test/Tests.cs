@@ -20,13 +20,21 @@ namespace ManagedBass.Gapless.Test
                 Assert.Fail("Failed to initialize GAPLESS.");
             }
 
-            var sourceChannel1 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.m4a", 0, 0, BassFlags.Decode | BassFlags.Float);
+            if (!BassGapless.EnableEvents(e =>
+            {
+                //Nothing to do for now.
+            }))
+            {
+                Assert.Fail("Failed to enable GAPLESS events.");
+            }
+
+            var sourceChannel1 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
             if (sourceChannel1 == -1)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }
 
-            var sourceChannel2 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\02 Outer Shpongolia.m4a", 0, 0, BassFlags.Decode | BassFlags.Float);
+            var sourceChannel2 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\02 Outer Shpongolia.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
             if (sourceChannel2 == -1)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
@@ -88,7 +96,7 @@ namespace ManagedBass.Gapless.Test
                 var channelPosition = Bass.ChannelGetPosition(playbackChannel);
                 var channelPositionSeconds = Bass.ChannelBytes2Seconds(playbackChannel, channelPosition);
 
-                if(channelPositionSeconds >= 20)
+                if (channelPositionSeconds >= 20)
                 {
                     break;
                 }

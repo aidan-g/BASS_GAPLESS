@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bass_gapless", "bass_gapless\bass_gapless.vcxproj", "{E612BC45-E1B1-4F71-8DCC-60ECC41B7596}"
 EndProject
@@ -28,14 +28,14 @@ Global
 		{3859B1EB-3352-45EF-BB2D-E72F4024FCF9}.Debug|x86.Build.0 = Debug|Win32
 		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Debug|x86.ActiveCfg = Debug|Win32
 		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Debug|x86.Build.0 = Debug|Win32
-		{996A7265-21AF-45E8-B697-05E7B2375EBC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{996A7265-21AF-45E8-B697-05E7B2375EBC}.Debug|x86.Build.0 = Debug|Any CPU
-		{E0B833B8-DF30-4339-BE41-C4336EE4DC99}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E0B833B8-DF30-4339-BE41-C4336EE4DC99}.Debug|x86.Build.0 = Debug|Any CPU
-		{BB63C405-B269-4EEC-B497-D8B2778D05BA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BB63C405-B269-4EEC-B497-D8B2778D05BA}.Debug|x86.Build.0 = Debug|Any CPU
-		{7ED7AEFA-85C3-47DC-9211-7FAD7A1D48FB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7ED7AEFA-85C3-47DC-9211-7FAD7A1D48FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{996A7265-21AF-45E8-B697-05E7B2375EBC}.Debug|x86.ActiveCfg = Debug|x86
+		{996A7265-21AF-45E8-B697-05E7B2375EBC}.Debug|x86.Build.0 = Debug|x86
+		{E0B833B8-DF30-4339-BE41-C4336EE4DC99}.Debug|x86.ActiveCfg = Debug|x86
+		{E0B833B8-DF30-4339-BE41-C4336EE4DC99}.Debug|x86.Build.0 = Debug|x86
+		{BB63C405-B269-4EEC-B497-D8B2778D05BA}.Debug|x86.ActiveCfg = Debug|x86
+		{BB63C405-B269-4EEC-B497-D8B2778D05BA}.Debug|x86.Build.0 = Debug|x86
+		{7ED7AEFA-85C3-47DC-9211-7FAD7A1D48FB}.Debug|x86.ActiveCfg = Debug|x86
+		{7ED7AEFA-85C3-47DC-9211-7FAD7A1D48FB}.Debug|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

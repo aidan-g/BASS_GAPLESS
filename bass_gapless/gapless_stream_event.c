@@ -49,8 +49,11 @@ BOOL gapless_stream_event_begin() {
 		return TRUE;
 	}
 	gapless_stream_event_shutdown = FALSE;
-	gapless_stream_event_lock_handle = CreateSemaphore(NULL, 2, 1, NULL);
+	gapless_stream_event_lock_handle = CreateSemaphore(NULL, 1, 1, NULL);
 	if (!gapless_stream_event_lock_handle) {
+		return FALSE;
+	}
+	if (!gapless_stream_event_enter()) {
 		return FALSE;
 	}
 	gapless_stream_event_thread_handle = CreateThread(NULL, 0, gapless_stream_event_update, NULL, 0, NULL);
@@ -61,36 +64,28 @@ BOOL gapless_stream_event_begin() {
 }
 
 BOOL  gapless_stream_event_end() {
-	DWORD success = TRUE;
-	if (!gapless_stream_event_lock_handle) {
-		success |= TRUE;
-	}
-	else {
-		ReleaseSemaphore(gapless_stream_event_thread_handle, 1, NULL);
-	}
+	gapless_stream_event_shutdown = TRUE;
+	gapless_stream_event_exit();
 	if (!gapless_stream_event_thread_handle) {
-		success |= TRUE;
+		return TRUE;
 	}
 	else {
-		DWORD result;
-		gapless_stream_event_shutdown = TRUE;
-		result = WaitForSingleObject(gapless_stream_event_thread_handle, INFINITE);
-		if (!CloseHandle(gapless_stream_event_thread_handle)) {
-			success = FALSE;
-		}
-		gapless_stream_event_thread_handle = NULL;
-		if (result == WAIT_OBJECT_0) {
-			success |= TRUE;
-		}
+		WaitForSingleObject(gapless_stream_event_thread_handle, INFINITE);
+		CloseHandle(gapless_stream_event_thread_handle);
+		CloseHandle(gapless_stream_event_lock_handle);
+		return TRUE;
 	}
-	return success;
+}
+
+BOOL gapless_stream_event_is_enabled() {
+	return gapless_stream_event_active;
 }
 
 BOOL gapless_stream_event_raise(GS_EVENT_ARGS args) {
 	if (!gapless_stream_event_handler) {
 		return FALSE;
 	}
-	if (gapless_stream_event_args.event_type == GS_NONE) {
+	if (args.event_type == GS_NONE) {
 		return FALSE;
 	}
 	gapless_stream_event_args = args;

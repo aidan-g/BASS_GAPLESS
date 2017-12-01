@@ -2,6 +2,10 @@
 #include "../bass_gapless/bass_gapless.h"
 #include "../bass_gapless/queue.h"
 
+VOID CALLBACK event_handler(GS_EVENT_ARGS args) {
+	printf("Gapless event: %d => %d => %d\n", args.event_type, args.channel_1, args.channel_2);
+}
+
 int main(int argc, char **argv) {
 	int output_rate = 192000;
 	DWORD source_channel_1;
@@ -25,15 +29,20 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	//Create a DECODE stream for a crappy song.
-	source_channel_1 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\01 Botanical Dimensions.m4a", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
+	if (!BASS_GAPLESS_EnableEvents(event_handler)) {
+		printf("Failed to enable GAPLESS events.\n");
+		return 1;
+	}
+
+		//Create a DECODE stream for a crappy song.
+		source_channel_1 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\01 Botanical Dimensions.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
 	if (source_channel_1 == 0) {
 		printf("Failed to create source stream: %d\n", BASS_ErrorGetCode());
 		return 1;
 	}
 
 	//Create a DECODE stream for another crappy song.
-	source_channel_2 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\02 Outer Shpongolia.m4a", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
+	source_channel_2 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\02 Outer Shpongolia.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
 	if (source_channel_2 == 0) {
 		printf("Failed to create source stream: %d\n", BASS_ErrorGetCode());
 		return 1;

@@ -65,5 +65,30 @@ namespace ManagedBass.Gapless
         {
             return BASS_GAPLESS_ChannelRemove(Handle);
         }
+
+        [DllImport(DllName)]
+        static extern bool BASS_GAPLESS_EnableEvents(BassGaplessEventProcedure Handler);
+
+        public static bool EnableEvents(BassGaplessEventProcedure Handler)
+        {
+            return BASS_GAPLESS_EnableEvents(Handler);
+        }
     }
+
+    public enum BassGaplessEventType
+    {
+        None = 0,
+        Start = 1,
+        Change = 2,
+        End = 3
+    }
+
+    public struct BassGaplessEventArgs
+    {
+        public BassGaplessEventType EventType;
+        int Channel1;
+        int Channel2;
+    }
+
+    public delegate void BassGaplessEventProcedure(BassGaplessEventArgs e);
 }

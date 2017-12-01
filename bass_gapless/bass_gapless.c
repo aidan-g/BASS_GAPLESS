@@ -1,6 +1,7 @@
 #include "bass_gapless.h"
 #include "gapless_stream.h"
 #include "gapless_stream_registry.h"
+#include "gapless_stream_event.h"
 
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_Init)() {
 	if (!gapless_stream_registry_create()) {
@@ -11,6 +12,9 @@ BOOL BASSGAPLESSDEF(BASS_GAPLESS_Init)() {
 
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_Free)() {
 	if (!gapless_stream_registry_free()) {
+		return FALSE;
+	}
+	if (!gapless_stream_event_end()) {
 		return FALSE;
 	}
 	return TRUE;
@@ -30,4 +34,8 @@ DWORD* BASSGAPLESSDEF(BASS_GAPLESS_GetChannels)(DWORD *count) {
 
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_ChannelRemove)(DWORD handle) {
 	return gapless_stream_registry_remove(handle);
+}
+
+BOOL BASSGAPLESSDEF(BASS_GAPLESS_EnableEvents)(GSEVENTPROC* handler) {
+	return gapless_stream_event_attach(handler);
 }
