@@ -83,12 +83,14 @@ namespace ManagedBass.Gapless
         End = 3
     }
 
+#pragma warning disable 0169
     public struct BassGaplessEventArgs
     {
         public BassGaplessEventType EventType;
         int Channel1;
         int Channel2;
     }
+#pragma warning restore 0169
 
     public delegate void BassGaplessEventProcedure(BassGaplessEventArgs e);
 }

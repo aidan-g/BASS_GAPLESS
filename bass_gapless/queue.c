@@ -12,10 +12,8 @@ QUEUE* queue_create(DWORD capacity, BOOL synchronized) {
 }
 
 void queue_free(QUEUE* queue) {
-	QUEUE_NODE* node;
-	while (queue_dequeue(queue, &node)) {
-		free(node);
-	}
+	void* data;
+	while (queue_dequeue(queue, &data)); //We're not freeing *data, is that OK?
 	if (queue->lock) {
 		CloseHandle(queue->lock);
 	}
@@ -61,7 +59,6 @@ BOOL queue_enqueue(QUEUE* queue, void* data) {
 			queue->tail = node;
 		}
 		queue->length++;
-		queue_exit(queue);
 		success = TRUE;
 	}
 	queue_exit(queue);

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Threading;
 
 namespace ManagedBass.Gapless.Test
@@ -119,6 +120,88 @@ namespace ManagedBass.Gapless.Test
             Bass.StreamFree(playbackChannel);
             BassGapless.Free();
             Bass.Free();
+        }
+
+        [Test]
+        public void Test002()
+        {
+            try
+            {
+                if (!BassGapless.Init())
+                {
+                    Assert.Fail("Failed to initialize GAPLESS.");
+                }
+
+                var input = Enumerable.Range(0, 11).ToList();
+
+                for (var a = 0; a < 11; a++)
+                {
+                    var success = BassGapless.ChannelEnqueue(input[a]);
+                    if (a < 10)
+                    {
+                        Assert.IsTrue(success);
+                    }
+                    else
+                    {
+                        //Should only allow 10 channels.
+                        Assert.IsFalse(success);
+                    }
+                }
+
+                var count = default(int);
+                var output = BassGapless.GetChannels(out count);
+                Assert.AreEqual(10, count);
+                for (var a = 0; a < 10; a++)
+                {
+                    Assert.AreEqual(input[a], output[a]);
+                }
+            }
+            finally
+            {
+                BassGapless.Free();
+            }
+        }
+
+        [Test]
+        public void Test003()
+        {
+            try
+            {
+                if (!BassGapless.Init())
+                {
+                    Assert.Fail("Failed to initialize GAPLESS.");
+                }
+
+                var input = Enumerable.Range(0, 10).ToList();
+
+                for (var a = 0; a < 10; a++)
+                {
+                    BassGapless.ChannelEnqueue(input[a]);
+                }
+
+                var channel1 = input[2];
+                var channel2 = input[5];
+                var channel3 = input[7];
+
+                input.Remove(channel1);
+                input.Remove(channel2);
+                input.Remove(channel3);
+                BassGapless.ChannelRemove(channel1);
+                BassGapless.ChannelRemove(channel2);
+                BassGapless.ChannelRemove(channel3);
+
+                var count = default(int);
+                var output = BassGapless.GetChannels(out count);
+                Assert.AreEqual(7, count);
+                for (var a = 0; a < 7; a++)
+                {
+                    Assert.AreEqual(input[a], output[a]);
+                }
+            }
+            finally
+            {
+                BassGapless.Free();
+            }
         }
     }
 }
