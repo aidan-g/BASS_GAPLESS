@@ -3,20 +3,30 @@
 #include "gapless_stream_registry.h"
 #include "gapless_stream_event.h"
 
+BOOL is_initialized = FALSE;
+
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_Init)() {
+	if (is_initialized) {
+		return FALSE;
+	}
 	if (!gapless_stream_registry_create()) {
 		return FALSE;
 	}
+	is_initialized = TRUE;
 	return TRUE;
 }
 
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_Free)() {
+	if (!is_initialized) {
+		return FALSE;
+	}
 	if (!gapless_stream_registry_free()) {
 		return FALSE;
 	}
 	if (!gapless_stream_event_end()) {
 		return FALSE;
 	}
+	is_initialized = FALSE;
 	return TRUE;
 }
 

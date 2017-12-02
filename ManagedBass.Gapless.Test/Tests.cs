@@ -203,5 +203,15 @@ namespace ManagedBass.Gapless.Test
                 BassGapless.Free();
             }
         }
+
+        [Test]
+        public void Test004()
+        {
+            Assert.IsFalse(BassGapless.Free());
+            Assert.IsTrue(BassGapless.Init());
+            Assert.IsFalse(BassGapless.Init());
+            Assert.IsTrue(BassGapless.Free());
+            Assert.IsFalse(BassGapless.Free());
+        }
     }
 }

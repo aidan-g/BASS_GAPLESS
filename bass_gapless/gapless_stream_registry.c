@@ -6,11 +6,14 @@
 
 #define MAX_GAPLESS_STREAMS 10
 
-QUEUE* queue;
+QUEUE* queue = NULL;
 
 DWORD current_stream = EMPTY_GAPLESS_STREAM;
 
 BOOL gapless_stream_registry_create() {
+	if (queue) {
+		return FALSE;
+	}
 	queue = queue_create(MAX_GAPLESS_STREAMS, TRUE);
 	return TRUE;
 }
@@ -77,6 +80,10 @@ DWORD* gapless_stream_registry_get_all(DWORD* length) {
 }
 
 BOOL gapless_stream_registry_free() {
+	if (!queue) {
+		return FALSE;
+	}
 	queue_free(queue);
+	queue = NULL;
 	return TRUE;
 }

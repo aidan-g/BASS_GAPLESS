@@ -18,6 +18,7 @@ void queue_free(QUEUE* queue) {
 		CloseHandle(queue->lock);
 	}
 	free(queue);
+	queue = NULL;
 }
 
 BOOL queue_enter(QUEUE* queue) {
