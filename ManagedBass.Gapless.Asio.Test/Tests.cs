@@ -26,14 +26,14 @@ namespace ManagedBass.Gapless.Asio.Test
                 Assert.Fail("Failed to initialize GAPLESS.");
             }
 
-            var sourceChannel1 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.m4a", 0, 0, BassFlags.Decode | BassFlags.Float);
-            if (sourceChannel1 == -1)
+            var sourceChannel1 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
+            if (sourceChannel1 == 0)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }
 
-            var sourceChannel2 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\02 Outer Shpongolia.m4a", 0, 0, BassFlags.Decode | BassFlags.Float);
-            if (sourceChannel2 == -1)
+            var sourceChannel2 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\02 Outer Shpongolia.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
+            if (sourceChannel2 == 0)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }
@@ -69,10 +69,10 @@ namespace ManagedBass.Gapless.Asio.Test
 
             {
                 var ok = true;
-                ok |= BassGaplessAsio.ChannelEnable(false, 0);
-                ok |= BassAsio.ChannelJoin(false, 1, 0);
-                ok |= BassAsio.ChannelSetFormat(false, 0, AsioSampleFormat.Float);
-                ok |= BassAsio.ChannelSetRate(false, 0, channelInfo.Frequency);
+                ok &= BassGaplessAsio.ChannelEnable(false, 0);
+                ok &= BassAsio.ChannelJoin(false, 1, 0);
+                ok &= BassAsio.ChannelSetFormat(false, 0, AsioSampleFormat.Float);
+                ok &= BassAsio.ChannelSetRate(false, 0, channelInfo.Frequency);
                 if (!ok)
                 {
                     Assert.Fail("Failed to configure ASIO.");
@@ -127,6 +127,16 @@ namespace ManagedBass.Gapless.Asio.Test
             BassGaplessAsio.Free();
             BassAsio.Free();
             Bass.Free();
+        }
+
+        [Test]
+        public void Test002()
+        {
+            Assert.IsFalse(BassGapless.Free());
+            Assert.IsTrue(BassGapless.Init());
+            Assert.IsFalse(BassGapless.Init());
+            Assert.IsTrue(BassGapless.Free());
+            Assert.IsFalse(BassGapless.Free());
         }
     }
 }

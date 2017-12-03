@@ -30,13 +30,13 @@ namespace ManagedBass.Gapless.Test
             }
 
             var sourceChannel1 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
-            if (sourceChannel1 == -1)
+            if (sourceChannel1 == 0)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }
 
             var sourceChannel2 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\02 Outer Shpongolia.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
-            if (sourceChannel2 == -1)
+            if (sourceChannel2 == 0)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }
@@ -71,7 +71,7 @@ namespace ManagedBass.Gapless.Test
             }
 
             var playbackChannel = BassGapless.StreamCreate(channelInfo.Frequency, channelInfo.Channels, BassFlags.Float);
-            if (playbackChannel == -1)
+            if (playbackChannel == 0)
             {
                 Assert.Fail(string.Format("Failed to create playback stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }

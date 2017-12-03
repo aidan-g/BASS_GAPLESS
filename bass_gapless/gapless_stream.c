@@ -17,8 +17,14 @@ DWORD gapless_stream_proc(void *buffer, DWORD length) {
 	DWORD handle;
 	while (gapless_stream_registry_peek(&handle)) {
 		if (BASS_ChannelIsActive(handle) == BASS_ACTIVE_PLAYING) {
-			position += BASS_ChannelGetData(handle, offset_buffer(buffer, position), remaining);
-			remaining = length - position;
+			DWORD read = BASS_ChannelGetData(handle, offset_buffer(buffer, position), remaining);
+			if (!read) {
+				//Looks like there isn't enough space left for any more frames.
+				//This seems to happen when playing DSD.
+				break;
+			}
+			position += read;
+			remaining -= read;
 			if (!remaining) {
 				break;
 			}
