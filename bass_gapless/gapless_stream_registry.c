@@ -32,39 +32,44 @@ BOOL gapless_stream_registry_dequeue(DWORD* handle) {
 	return queue_dequeue(queue, (void**)handle);
 }
 
+void gapless_steam_registry_raise(BOOL success, DWORD handle) {
+	GS_EVENT_ARGS event_args;
+	if (!gapless_stream_event_is_enabled())
+	{
+		return;
+	}
+	if (success) {
+		if (handle != current_stream) {
+			if (current_stream) {
+				event_args.event_type = GS_CHANGE;
+				event_args.channel_1 = current_stream;
+				event_args.channel_2 = handle;
+			}
+			else {
+				event_args.event_type = GS_START;
+				event_args.channel_1 = handle;
+				event_args.channel_2 = EMPTY_GAPLESS_STREAM;
+			}
+			gapless_stream_event_raise(event_args);
+			current_stream = handle;
+		}
+	}
+	else if (current_stream) {
+		event_args.event_type = GS_END;
+		event_args.channel_1 = current_stream;
+		event_args.channel_2 = EMPTY_GAPLESS_STREAM;
+		gapless_stream_event_raise(event_args);
+		current_stream = EMPTY_GAPLESS_STREAM;
+	}
+}
+
 BOOL gapless_stream_registry_peek(DWORD* handle) {
 	BOOL success;
 	if (!queue) {
 		return FALSE;
 	}
 	success = queue_peek(queue, (void**)handle);
-	if (gapless_stream_event_is_enabled())
-	{
-		GS_EVENT_ARGS event_args;
-		if (success) {
-			if (*handle != current_stream) {
-				if (current_stream) {
-					event_args.event_type = GS_CHANGE;
-					event_args.channel_1 = current_stream;
-					event_args.channel_2 = *handle;
-				}
-				else {
-					event_args.event_type = GS_START;
-					event_args.channel_1 = *handle;
-					event_args.channel_2 = EMPTY_GAPLESS_STREAM;
-				}
-				gapless_stream_event_raise(event_args);
-				current_stream = *handle;
-			}
-		}
-		else if (current_stream) {
-			event_args.event_type = GS_END;
-			event_args.channel_1 = current_stream;
-			event_args.channel_2 = EMPTY_GAPLESS_STREAM;
-			gapless_stream_event_raise(event_args);
-			current_stream = EMPTY_GAPLESS_STREAM;
-		}
-	}
+	gapless_steam_registry_raise(success, *handle);
 	return success;
 }
 

@@ -23,7 +23,7 @@ BOOL BASSGAPLESSDEF(BASS_GAPLESS_Free)() {
 	if (!gapless_stream_registry_free()) {
 		return FALSE;
 	}
-	if (!gapless_stream_event_end()) {
+	if (!gapless_stream_event_detach()) {
 		return FALSE;
 	}
 	is_initialized = FALSE;
@@ -63,4 +63,11 @@ BOOL BASSGAPLESSDEF(BASS_GAPLESS_EnableEvents)(GSEVENTPROC* handler) {
 		return FALSE;
 	}
 	return gapless_stream_event_attach(handler);
+}
+
+BOOL BASSGAPLESSDEF(BASS_GAPLESS_DisableEvents)() {
+	if (!is_initialized) {
+		return FALSE;
+	}
+	return gapless_stream_event_detach();
 }

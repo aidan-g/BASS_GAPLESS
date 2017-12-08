@@ -73,6 +73,14 @@ namespace ManagedBass.Gapless
         {
             return BASS_GAPLESS_EnableEvents(Handler);
         }
+
+        [DllImport(DllName)]
+        static extern bool BASS_GAPLESS_DisableEvents();
+
+        public static bool DisableEvents()
+        {
+            return BASS_GAPLESS_DisableEvents();
+        }
     }
 
     public enum BassGaplessEventType

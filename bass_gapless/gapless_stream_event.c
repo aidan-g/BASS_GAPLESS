@@ -1,102 +1,59 @@
 #include "gapless_stream_event.h"
 
-GS_EVENT_ARGS gapless_stream_event_args_none;
-BOOL gapless_stream_event_shutdown = FALSE;
-volatile BOOL gapless_stream_event_active = FALSE;
-HANDLE gapless_stream_event_thread_handle = NULL;
-HANDLE gapless_stream_event_lock_handle = NULL;
-GS_EVENT_ARGS gapless_stream_event_args;
+typedef struct
+{
+	HANDLE thread_handle;
+	GS_EVENT_ARGS args;
+} GS_EVENT_HANDLER;
+
 GSEVENTPROC* gapless_stream_event_handler = NULL;
 
-BOOL gapless_stream_event_enter() {
-	DWORD result;
-	if (!gapless_stream_event_lock_handle) {
-		return TRUE;
-	}
-	result = WaitForSingleObject(gapless_stream_event_lock_handle, INFINITE);
-	if (result != WAIT_OBJECT_0) {
-		return FALSE;
-	}
-	return TRUE;
-}
-
-void gapless_stream_event_exit() {
-	if (!gapless_stream_event_lock_handle) {
-		return;
-	}
-	ReleaseSemaphore(gapless_stream_event_lock_handle, 1, NULL);
-}
-
-DWORD WINAPI gapless_stream_event_update(void* args) {
-	if (gapless_stream_event_shutdown || !gapless_stream_event_lock_handle) {
-		return FALSE;
-	}
-	gapless_stream_event_active = TRUE;
-	while (!gapless_stream_event_shutdown) {
-		if (!gapless_stream_event_enter()) {
-			continue;
+DWORD WINAPI gapless_stream_event_background_raise(void* args) {
+	BOOL success = TRUE;
+	GS_EVENT_HANDLER* handler = args;
+	if (handler) {
+		if (gapless_stream_event_handler) {
+			gapless_stream_event_handler(handler->args);
 		}
-		if (gapless_stream_event_handler && gapless_stream_event_args.event_type != GS_NONE) {
-			gapless_stream_event_handler(gapless_stream_event_args);
-			gapless_stream_event_args.event_type = GS_NONE;
-		}
+		success &= CloseHandle(handler->thread_handle);
+		free(handler);
 	}
-	return TRUE;
-}
-
-BOOL gapless_stream_event_begin() {
-	if (gapless_stream_event_active) {
-		return TRUE;
-	}
-	gapless_stream_event_shutdown = FALSE;
-	gapless_stream_event_lock_handle = CreateSemaphore(NULL, 1, 1, NULL);
-	if (!gapless_stream_event_lock_handle) {
-		return FALSE;
-	}
-	if (!gapless_stream_event_enter()) {
-		return FALSE;
-	}
-	gapless_stream_event_thread_handle = CreateThread(NULL, 0, gapless_stream_event_update, NULL, 0, NULL);
-	if (!gapless_stream_event_thread_handle) {
-		return FALSE;
-	}
-	return TRUE;
-}
-
-BOOL  gapless_stream_event_end() {
-	gapless_stream_event_shutdown = TRUE;
-	gapless_stream_event_exit();
-	if (!gapless_stream_event_thread_handle) {
-		return TRUE;
-	}
-	else {
-		WaitForSingleObject(gapless_stream_event_thread_handle, INFINITE);
-		CloseHandle(gapless_stream_event_thread_handle);
-		CloseHandle(gapless_stream_event_lock_handle);
-		return TRUE;
-	}
-}
-
-BOOL gapless_stream_event_is_enabled() {
-	return gapless_stream_event_active;
+	return success;
 }
 
 BOOL gapless_stream_event_raise(GS_EVENT_ARGS args) {
+	GS_EVENT_HANDLER* handler = malloc(sizeof(GS_EVENT_HANDLER));
 	if (!gapless_stream_event_handler) {
 		return FALSE;
 	}
-	if (args.event_type == GS_NONE) {
+	handler->args = args;
+	handler->thread_handle = CreateThread(NULL, 0, gapless_stream_event_background_raise, handler, 0, NULL);
+	if (!handler->thread_handle) {
+		free(handler);
 		return FALSE;
 	}
-	gapless_stream_event_args = args;
-	gapless_stream_event_exit();
+	return TRUE;
+}
+
+BOOL gapless_stream_event_is_enabled() {
+	if (!gapless_stream_event_handler) {
+		return FALSE;
+	}
 	return TRUE;
 }
 
 BOOL gapless_stream_event_attach(GSEVENTPROC* handler) {
-	gapless_stream_event_handler = handler;
-	if (!gapless_stream_event_begin()) {
+	if (gapless_stream_event_is_enabled() && !gapless_stream_event_detach()) {
 		return FALSE;
+	}
+	gapless_stream_event_handler = handler;
+	return TRUE;
+}
+BOOL gapless_stream_event_detach() {
+	if (gapless_stream_event_is_enabled()) {
+		//TODO: This triggers a breakpoint?
+		//free(gapless_stream_event_handler); 
+		gapless_stream_event_handler = NULL;
 	}
 	return TRUE;
 }

@@ -8,6 +8,8 @@ namespace ManagedBass.Gapless.Test
     [TestFixture]
     public class Tests
     {
+        const uint BASS_STREAMPROC_END = 0x80000000;
+
         [Test]
         public void Test001()
         {
@@ -115,6 +117,11 @@ namespace ManagedBass.Gapless.Test
                 Assert.Fail("Failed to remove queued gapless channel.");
             }
 
+            if (!BassGapless.DisableEvents())
+            {
+                Assert.Fail("Failed to disable GAPLESS events.");
+            }
+
             Bass.StreamFree(sourceChannel1);
             Bass.StreamFree(sourceChannel2);
             Bass.StreamFree(playbackChannel);
@@ -212,6 +219,68 @@ namespace ManagedBass.Gapless.Test
             Assert.IsFalse(BassGapless.Init());
             Assert.IsTrue(BassGapless.Free());
             Assert.IsFalse(BassGapless.Free());
+        }
+
+        [Test]
+        public void Test005()
+        {
+            try
+            {
+                if (!Bass.Init(Bass.NoSoundDevice))
+                {
+                    Assert.Fail(string.Format("Failed to initialize BASS: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
+                }
+
+                var sourceChannel = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode);
+                if (sourceChannel == 0)
+                {
+                    Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
+                }
+
+                var channelInfo = default(ChannelInfo);
+                if (!Bass.ChannelGetInfo(sourceChannel, out channelInfo))
+                {
+                    Assert.Fail(string.Format("Failed to get channel info: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
+                }
+
+                if (!BassGapless.Init())
+                {
+                    Assert.Fail("Failed to initialize GAPLESS.");
+                }
+
+                var playbackChannel = BassGapless.StreamCreate(channelInfo.Frequency, channelInfo.Channels, BassFlags.Decode);
+                if (playbackChannel == 0)
+                {
+                    Assert.Fail(string.Format("Failed to create playback stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
+                }
+
+                {
+                    byte[] buffer = new byte[1024];
+                    int count = Bass.ChannelGetData(playbackChannel, buffer, buffer.Length);
+                    Assert.AreEqual(-1, count);
+                }
+
+                if (!BassGapless.ChannelEnqueue(sourceChannel))
+                {
+                    Assert.Fail("Failed to add stream to gapless queue.");
+                }
+
+                Bass.ChannelSetPosition(playbackChannel, 0);
+
+                {
+                    byte[] buffer = new byte[1024];
+                    int count = Bass.ChannelGetData(playbackChannel, buffer, buffer.Length);
+                    Assert.AreEqual(buffer.Length, count);
+                }
+
+                Bass.StreamFree(sourceChannel);
+                Bass.StreamFree(playbackChannel);
+            }
+            finally
+            {
+                BassGapless.Free();
+                Bass.Free();
+            }
         }
     }
 }

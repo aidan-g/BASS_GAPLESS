@@ -43,4 +43,7 @@ BOOL BASSGAPLESSDEF(BASS_GAPLESS_ChannelRemove)(DWORD handle);
 __declspec(dllexport)
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_EnableEvents)(GSEVENTPROC* handler);
 
+__declspec(dllexport)
+BOOL BASSGAPLESSDEF(BASS_GAPLESS_DisableEvents)();
+
 #endif
