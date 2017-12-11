@@ -8,8 +8,15 @@ namespace ManagedBass.Gapless.Test
     [TestFixture]
     public class Tests
     {
-        const uint BASS_STREAMPROC_END = 0x80000000;
+        const int BASS_STREAMPROC_ERR = -1;
 
+        const int BASS_STREAMPROC_EMPTY = 0;
+
+        const int BASS_STREAMPROC_END = -2147483648; //0x80000000;
+
+        /// <summary>
+        /// A basic end to end test.
+        /// </summary>
         [Test]
         public void Test001()
         {
@@ -31,13 +38,13 @@ namespace ManagedBass.Gapless.Test
                 Assert.Fail("Failed to enable GAPLESS events.");
             }
 
-            var sourceChannel1 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
+            var sourceChannel1 = Bass.CreateStream(@"D:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
             if (sourceChannel1 == 0)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }
 
-            var sourceChannel2 = Bass.CreateStream(@"C:\Source\Prototypes\Resources\02 Outer Shpongolia.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
+            var sourceChannel2 = Bass.CreateStream(@"D:\Source\Prototypes\Resources\02 Outer Shpongolia.flac", 0, 0, BassFlags.Decode | BassFlags.Float);
             if (sourceChannel2 == 0)
             {
                 Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
@@ -129,6 +136,9 @@ namespace ManagedBass.Gapless.Test
             Bass.Free();
         }
 
+        /// <summary>
+        /// MAX_GAPLESS_STREAMS (10) resampler channels are supported.
+        /// </summary>
         [Test]
         public void Test002()
         {
@@ -169,6 +179,9 @@ namespace ManagedBass.Gapless.Test
             }
         }
 
+        /// <summary>
+        /// Random channel removal is OK.
+        /// </summary>
         [Test]
         public void Test003()
         {
@@ -211,6 +224,9 @@ namespace ManagedBass.Gapless.Test
             }
         }
 
+        /// <summary>
+        /// Init/Free called out of sequence does not crash.
+        /// </summary>
         [Test]
         public void Test004()
         {
@@ -221,6 +237,10 @@ namespace ManagedBass.Gapless.Test
             Assert.IsFalse(BassGapless.Free());
         }
 
+        /// <summary>
+        /// 1) Reading channel when queue is empty returns an error (-1).
+        /// 2) When the queue is populated and the position reset everything continues to work.
+        /// </summary>
         [Test]
         public void Test005()
         {
@@ -231,7 +251,7 @@ namespace ManagedBass.Gapless.Test
                     Assert.Fail(string.Format("Failed to initialize BASS: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
                 }
 
-                var sourceChannel = Bass.CreateStream(@"C:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode);
+                var sourceChannel = Bass.CreateStream(@"D:\Source\Prototypes\Resources\01 Botanical Dimensions.flac", 0, 0, BassFlags.Decode);
                 if (sourceChannel == 0)
                 {
                     Assert.Fail(string.Format("Failed to create source stream: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
@@ -275,6 +295,66 @@ namespace ManagedBass.Gapless.Test
 
                 Bass.StreamFree(sourceChannel);
                 Bass.StreamFree(playbackChannel);
+            }
+            finally
+            {
+                BassGapless.Free();
+                Bass.Free();
+            }
+        }
+
+        /// <summary>
+        /// Failure to read from source does not mark the stream as "complete" when <see cref="BassGaplessAttriubute.KeepAlive"/> is specified.
+        /// </summary>
+        /// <param name="err"></param>
+        //[TestCase(BASS_STREAMPROC_ERR)] //-1 doesn't seem to be understood.
+        [TestCase(BASS_STREAMPROC_EMPTY)]
+        [TestCase(BASS_STREAMPROC_END)]
+        public void Test006(int? err)
+        {
+            try
+            {
+                if (!Bass.Init(Bass.NoSoundDevice, 44100))
+                {
+                    Assert.Fail(string.Format("Failed to initialize BASS: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
+                }
+
+                if (!BassGapless.Init())
+                {
+                    Assert.Fail("Failed to initialize GAPLESS.");
+                }
+
+                var channel = Bass.CreateStream(48000, 2, BassFlags.Decode, (handle, buffer, length, user) =>
+                {
+                    if (err.HasValue)
+                    {
+                        return err.Value;
+                    }
+                    return length;
+                });
+
+                var gapless = BassGapless.StreamCreate(48000, 2, BassFlags.Decode);
+                BassGapless.ChannelEnqueue(channel);
+                BassGapless.SetConfig(BassGaplessAttriubute.KeepAlive, true);
+
+                {
+                    var buffer = new byte[1024];
+                    var length = Bass.ChannelGetData(gapless, buffer, buffer.Length);
+                    Assert.AreEqual(0, length);
+                }
+
+                err = null;
+                Bass.ChannelSetPosition(channel, 0);
+                BassGapless.ChannelEnqueue(channel);
+
+                {
+                    var buffer = new byte[1024];
+                    var length = Bass.ChannelGetData(gapless, buffer, buffer.Length);
+                    Assert.AreEqual(buffer.Length, length);
+                }
+
+                Bass.StreamFree(channel);
+                Bass.StreamFree(gapless);
             }
             finally
             {

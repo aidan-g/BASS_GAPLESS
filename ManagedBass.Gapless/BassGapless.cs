@@ -32,6 +32,27 @@ namespace ManagedBass.Gapless
         }
 
         [DllImport(DllName)]
+        static extern bool BASS_GAPLESS_SetConfig(BassGaplessAttriubute Attrib, int Value);
+
+        public static bool SetConfig(BassGaplessAttriubute Attrib, int Value)
+        {
+            return BASS_GAPLESS_SetConfig(Attrib, Value);
+        }
+
+        public static bool SetConfig(BassGaplessAttriubute Attrib, bool Value)
+        {
+            return BASS_GAPLESS_SetConfig(Attrib, Value ? 1 : 0);
+        }
+
+        [DllImport(DllName)]
+        static extern bool BASS_GAPLESS_GetConfig(BassGaplessAttriubute Attrib, out int Value);
+
+        public static bool GetConfig(BassGaplessAttriubute Attrib, out int Value)
+        {
+            return BASS_GAPLESS_GetConfig(Attrib, out Value);
+        }
+
+        [DllImport(DllName)]
         static extern int BASS_GAPLESS_StreamCreate(int Frequency, int Channels, BassFlags Flags, IntPtr User = default(IntPtr));
 
         public static int StreamCreate(int Frequency, int Channels, BassFlags Flags, IntPtr User = default(IntPtr))
@@ -81,6 +102,12 @@ namespace ManagedBass.Gapless
         {
             return BASS_GAPLESS_DisableEvents();
         }
+    }
+
+    public enum BassGaplessAttriubute
+    {
+        None = 0,
+        KeepAlive = 1
     }
 
     public enum BassGaplessEventType

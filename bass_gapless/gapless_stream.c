@@ -1,3 +1,4 @@
+#include "gapless_config.h"
 #include "gapless_stream.h"
 #include "gapless_stream_registry.h"
 #include "buffer.h"
@@ -15,6 +16,8 @@ DWORD gapless_stream_proc(void *buffer, DWORD length) {
 	DWORD position = 0;
 	DWORD remaining = length;
 	DWORD handle;
+	BOOL keep_alive;
+	gapless_config_get(KEEP_ALIVE, &keep_alive);
 	while (gapless_stream_registry_peek(&handle)) {
 		if (BASS_ChannelIsActive(handle) == BASS_ACTIVE_PLAYING) {
 			DWORD read = BASS_ChannelGetData(handle, offset_buffer(buffer, position), remaining);
@@ -23,6 +26,14 @@ DWORD gapless_stream_proc(void *buffer, DWORD length) {
 				//This seems to happen when playing DSD.
 				break;
 			}
+			if (read == BASS_STREAMPROC_END) {
+				//End of stream.
+				goto dequeue;
+			}
+			if (read == BASS_ERROR_UNKNOWN) {
+				//Some unknown error.
+				goto dequeue;
+			}
 			position += read;
 			remaining -= read;
 			if (!remaining) {
@@ -30,10 +41,11 @@ DWORD gapless_stream_proc(void *buffer, DWORD length) {
 			}
 		}
 		else {
+		dequeue:
 			gapless_stream_registry_dequeue(&handle);
 		}
 	}
-	if (!position) {
+	if (!position && !keep_alive) {
 		position = BASS_STREAMPROC_END;
 	}
 	return position;

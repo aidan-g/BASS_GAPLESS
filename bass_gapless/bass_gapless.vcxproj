@@ -28,6 +28,7 @@
     <ClInclude Include="..\bass\bassasio.h" />
     <ClInclude Include="bass_gapless.h" />
     <ClInclude Include="buffer.h" />
+    <ClInclude Include="gapless_config.h" />
     <ClInclude Include="gapless_stream.h" />
     <ClInclude Include="gapless_stream_event.h" />
     <ClInclude Include="gapless_stream_registry.h" />
@@ -36,6 +37,7 @@
   <ItemGroup>
     <ClCompile Include="bass_gapless.c" />
     <ClCompile Include="buffer.c" />
+    <ClCompile Include="gapless_config.c" />
     <ClCompile Include="gapless_stream.c" />
     <ClCompile Include="gapless_stream_event.c" />
     <ClCompile Include="gapless_stream_registry.c" />

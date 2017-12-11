@@ -35,14 +35,14 @@ int main(int argc, char **argv) {
 	}
 
 		//Create a DECODE stream for a crappy song.
-		source_channel_1 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\01 Botanical Dimensions.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
+		source_channel_1 = BASS_StreamCreateFile(FALSE, "D:\\Source\\Prototypes\\Resources\\01 Botanical Dimensions.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
 	if (source_channel_1 == 0) {
 		printf("Failed to create source stream: %d\n", BASS_ErrorGetCode());
 		return 1;
 	}
 
 	//Create a DECODE stream for another crappy song.
-	source_channel_2 = BASS_StreamCreateFile(FALSE, "C:\\Source\\Prototypes\\Resources\\02 Outer Shpongolia.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
+	source_channel_2 = BASS_StreamCreateFile(FALSE, "D:\\Source\\Prototypes\\Resources\\02 Outer Shpongolia.flac", 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT);
 	if (source_channel_2 == 0) {
 		printf("Failed to create source stream: %d\n", BASS_ErrorGetCode());
 		return 1;

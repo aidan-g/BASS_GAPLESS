@@ -1,4 +1,5 @@
 #include "bass_gapless.h"
+#include "gapless_config.h"
 #include "gapless_stream.h"
 #include "gapless_stream_registry.h"
 #include "gapless_stream_event.h"
@@ -28,6 +29,14 @@ BOOL BASSGAPLESSDEF(BASS_GAPLESS_Free)() {
 	}
 	is_initialized = FALSE;
 	return TRUE;
+}
+
+BOOL BASSGAPLESSDEF(BASS_GAPLESS_SetConfig)(GS_ATTRIBUTE attrib, DWORD value) {
+	return gapless_config_set(attrib, value);
+}
+
+BOOL BASSGAPLESSDEF(BASS_GAPLESS_GetConfig)(GS_ATTRIBUTE attrib, DWORD* value) {
+	return gapless_config_get(attrib, value);
 }
 
 HSTREAM BASSGAPLESSDEF(BASS_GAPLESS_StreamCreate)(DWORD freq, DWORD chans, DWORD flags, void *user) {
