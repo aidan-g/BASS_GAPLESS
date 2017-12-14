@@ -1,8 +1,12 @@
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 #include "gapless_stream_event.h"
 
 typedef struct
 {
-	HANDLE thread_handle;
+	HANDLE handle;
 	GS_EVENT_ARGS args;
 } GS_EVENT_HANDLER;
 
@@ -15,8 +19,17 @@ DWORD WINAPI gapless_stream_event_background_raise(void* args) {
 		if (gapless_stream_event_handler) {
 			gapless_stream_event_handler(handler->args);
 		}
-		success &= CloseHandle(handler->thread_handle);
+		if (!CloseHandle(handler->handle)) {
+#if _DEBUG
+			printf("Failed to release thread.\n");
+#endif
+			success = FALSE;
+		}
+		else {
+			handler->handle = NULL;
+		}
 		free(handler);
+		handler = NULL;
 	}
 	return success;
 }
@@ -26,10 +39,17 @@ BOOL gapless_stream_event_raise(GS_EVENT_ARGS args) {
 	if (!gapless_stream_event_handler) {
 		return FALSE;
 	}
+#if _DEBUG
+	printf("Raising event: %d => %d => %d.\n", args.event_type, args.channel_1, args.channel_2);
+#endif
 	handler->args = args;
-	handler->thread_handle = CreateThread(NULL, 0, gapless_stream_event_background_raise, handler, 0, NULL);
-	if (!handler->thread_handle) {
+	handler->handle = CreateThread(NULL, 0, gapless_stream_event_background_raise, handler, 0, NULL);
+	if (!handler->handle) {
+#if _DEBUG
+		printf("Failed to create thread.\n");
+#endif
 		free(handler);
+		handler = NULL;
 		return FALSE;
 	}
 	return TRUE;
@@ -47,13 +67,17 @@ BOOL gapless_stream_event_attach(GSEVENTPROC* handler) {
 		return FALSE;
 	}
 	gapless_stream_event_handler = handler;
+#if _DEBUG
+	printf("Events enabled.\n");
+#endif
 	return TRUE;
 }
 BOOL gapless_stream_event_detach() {
 	if (gapless_stream_event_is_enabled()) {
-		//TODO: This triggers a breakpoint?
-		//free(gapless_stream_event_handler); 
 		gapless_stream_event_handler = NULL;
+#if _DEBUG
+		printf("Events disabled.\n");
+#endif
 	}
 	return TRUE;
 }

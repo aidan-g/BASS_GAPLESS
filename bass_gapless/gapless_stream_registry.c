@@ -1,3 +1,7 @@
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 #include "gapless_stream_registry.h"
 #include "gapless_stream_event.h"
 #include "queue.h"
@@ -15,6 +19,12 @@ BOOL gapless_stream_registry_create() {
 		return FALSE;
 	}
 	queue = queue_create(MAX_GAPLESS_STREAMS, TRUE);
+	if (!queue) {
+#if _DEBUG
+		printf("Failed to create queue.\n");
+#endif
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -22,6 +32,9 @@ BOOL gapless_stream_registry_enqueue(DWORD handle) {
 	if (!queue) {
 		return FALSE;
 	}
+#if _DEBUG
+	printf("Enqueuing channel: %d\n", handle);
+#endif
 	return queue_enqueue(queue, (void*)handle);
 }
 
@@ -29,6 +42,9 @@ BOOL gapless_stream_registry_dequeue(DWORD* handle) {
 	if (!queue) {
 		return FALSE;
 	}
+#if _DEBUG
+	printf("Dequeuing channel: %d\n", handle);
+#endif
 	return queue_dequeue(queue, (void**)handle);
 }
 
@@ -77,6 +93,9 @@ BOOL gapless_stream_registry_remove(DWORD handle) {
 	if (!queue) {
 		return FALSE;
 	}
+#if _DEBUG
+	printf("Removing channel: %d\n", handle);
+#endif
 	return queue_remove(queue, (void*)handle);
 }
 

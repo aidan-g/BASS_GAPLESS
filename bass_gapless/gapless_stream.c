@@ -1,3 +1,7 @@
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 #include "gapless_config.h"
 #include "gapless_stream.h"
 #include "gapless_stream_registry.h"
@@ -5,7 +9,17 @@
 #include "../bass/bass.h"
 
 HSTREAM BASSGAPLESSDEF(gapless_stream_create)(DWORD freq, DWORD chans, DWORD flags, void *user) {
-	return BASS_StreamCreate(freq, chans, flags, &gapless_stream_bass_proc, user);
+	HSTREAM result = BASS_StreamCreate(freq, chans, flags, &gapless_stream_bass_proc, user);
+#if _DEBUG
+	if (result)
+	{
+		printf("Created gapless channel: %d\n", result);
+	}
+	else {
+		printf("Failed to create gapless channel.\n");
+	}
+#endif
+	return result;
 }
 
 DWORD CALLBACK gapless_stream_bass_proc(HSTREAM handle, void *buffer, DWORD length, void *user) {
@@ -47,6 +61,11 @@ DWORD gapless_stream_proc(void *buffer, DWORD length) {
 	}
 	if (!position && !keep_alive) {
 		position = BASS_STREAMPROC_END;
+	}
+	else if (position < length) {
+#if _DEBUG
+		printf("Buffer underrun while writing buffer.\n");
+#endif
 	}
 	return position;
 }

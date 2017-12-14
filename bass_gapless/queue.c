@@ -1,3 +1,7 @@
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 #include "queue.h"
 
 #define QUEUE_LOCK_TIMEOUT 1000
@@ -7,6 +11,11 @@ QUEUE* queue_create(DWORD capacity, BOOL synchronized) {
 	queue->capacity = capacity;
 	if (synchronized) {
 		queue->lock = CreateSemaphore(NULL, 1, 1, NULL);
+		if (!queue->lock) {
+#if _DEBUG
+			printf("Failed to create semaphore.\n");
+#endif
+		}
 	}
 	return queue;
 }
@@ -15,7 +24,14 @@ void queue_free(QUEUE* queue) {
 	void* data;
 	while (queue_dequeue(queue, &data)); //We're not freeing *data, is that OK?
 	if (queue->lock) {
-		CloseHandle(queue->lock);
+		if (!CloseHandle(queue->lock)) {
+#if _DEBUG
+			printf("Failed to release semaphore.\n");
+#endif
+		}
+		else {
+			queue->lock = NULL;
+		}
 	}
 	free(queue);
 	queue = NULL;
@@ -28,13 +44,23 @@ BOOL queue_enter(QUEUE* queue) {
 		if (result == WAIT_OBJECT_0) {
 			return TRUE;
 		}
+		else {
+#if _DEBUG
+			printf("Failed to enter semaphore.\n");
+#endif
+			return FALSE;
+		}
 	}
 	return TRUE;
 }
 
 void queue_exit(QUEUE* queue) {
 	if (queue->lock) {
-		ReleaseSemaphore(queue->lock, 1, NULL);
+		if (!ReleaseSemaphore(queue->lock, 1, NULL)) {
+#if _DEBUG
+			printf("Failed to exit semaphore.\n");
+#endif
+		}
 	}
 }
 

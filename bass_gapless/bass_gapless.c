@@ -1,3 +1,7 @@
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 #include "bass_gapless.h"
 #include "gapless_config.h"
 #include "gapless_stream.h"
@@ -14,21 +18,33 @@ BOOL BASSGAPLESSDEF(BASS_GAPLESS_Init)() {
 		return FALSE;
 	}
 	is_initialized = TRUE;
+#if _DEBUG
+	printf("BASS GAPLESS initialized.\n");
+#endif
 	return TRUE;
 }
 
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_Free)() {
+	BOOL success = TRUE;
 	if (!is_initialized) {
-		return FALSE;
+		success = FALSE;
 	}
-	if (!gapless_stream_registry_free()) {
-		return FALSE;
+	else {
+		success &= gapless_stream_registry_free();
+		success &= gapless_stream_event_detach();
 	}
-	if (!gapless_stream_event_detach()) {
-		return FALSE;
+	if (success) {
+		is_initialized = FALSE;
+#if _DEBUG
+		printf("BASS GAPLESS released.\n");
+#endif
 	}
-	is_initialized = FALSE;
-	return TRUE;
+	else {
+#if _DEBUG
+		printf("Failed to release BASS GAPLESS.\n");
+#endif
+	}
+	return success;
 }
 
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_SetConfig)(GS_ATTRIBUTE attrib, DWORD value) {
@@ -43,7 +59,7 @@ HSTREAM BASSGAPLESSDEF(BASS_GAPLESS_StreamCreate)(DWORD freq, DWORD chans, DWORD
 	if (!is_initialized) {
 		return 0;
 	}
-	return BASS_StreamCreate(freq, chans, flags, &gapless_stream_bass_proc, user);
+	return gapless_stream_create(freq, chans, flags, user);
 }
 
 BOOL BASSGAPLESSDEF(BASS_GAPLESS_ChannelEnqueue)(HSTREAM handle) {

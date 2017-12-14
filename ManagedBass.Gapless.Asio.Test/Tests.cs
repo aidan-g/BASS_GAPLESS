@@ -19,7 +19,7 @@ namespace ManagedBass.Gapless.Asio.Test
                 Assert.Fail(string.Format("Failed to initialize BASS: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
             }
 
-            if (!BassAsio.Init(0, AsioInitFlags.Thread))
+            if (!BassAsio.Init(2, AsioInitFlags.Thread))
             {
                 Assert.Fail(string.Format("Failed to initialize ASIO: {0}", Enum.GetName(typeof(Errors), BassAsio.LastError)));
             }
@@ -138,11 +138,11 @@ namespace ManagedBass.Gapless.Asio.Test
         [Test]
         public void Test002()
         {
-            Assert.IsFalse(BassGapless.Free());
-            Assert.IsTrue(BassGapless.Init());
-            Assert.IsFalse(BassGapless.Init());
-            Assert.IsTrue(BassGapless.Free());
-            Assert.IsFalse(BassGapless.Free());
+            Assert.IsFalse(BassGaplessAsio.Free());
+            Assert.IsTrue(BassGaplessAsio.Init());
+            Assert.IsFalse(BassGaplessAsio.Init());
+            Assert.IsTrue(BassGaplessAsio.Free());
+            Assert.IsFalse(BassGaplessAsio.Free());
         }
     }
 }
