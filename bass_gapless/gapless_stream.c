@@ -30,7 +30,7 @@ DWORD gapless_stream_proc(void *buffer, DWORD length) {
 	DWORD position = 0;
 	DWORD remaining = length;
 	DWORD handle;
-	BOOL keep_alive;
+	DWORD keep_alive;
 	gapless_config_get(KEEP_ALIVE, &keep_alive);
 	while (gapless_stream_registry_peek(&handle)) {
 		if (BASS_ChannelIsActive(handle) == BASS_ACTIVE_PLAYING) {

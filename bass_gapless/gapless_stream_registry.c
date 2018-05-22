@@ -48,11 +48,11 @@ BOOL gapless_stream_registry_dequeue(DWORD* handle) {
 	return queue_dequeue(queue, (void**)handle);
 }
 
-void gapless_steam_registry_raise(BOOL success, DWORD handle) {
+BOOL gapless_steam_registry_raise(BOOL success, DWORD handle) {
 	GS_EVENT_ARGS event_args;
 	if (!gapless_stream_event_is_enabled())
 	{
-		return;
+		return FALSE;
 	}
 	if (success) {
 		if (handle != current_stream) {
@@ -68,6 +68,7 @@ void gapless_steam_registry_raise(BOOL success, DWORD handle) {
 			}
 			gapless_stream_event_raise(event_args);
 			current_stream = handle;
+			return TRUE;
 		}
 	}
 	else if (current_stream) {
@@ -76,7 +77,9 @@ void gapless_steam_registry_raise(BOOL success, DWORD handle) {
 		event_args.channel_2 = EMPTY_GAPLESS_STREAM;
 		gapless_stream_event_raise(event_args);
 		current_stream = EMPTY_GAPLESS_STREAM;
+		return TRUE;
 	}
+	return FALSE;
 }
 
 BOOL gapless_stream_registry_peek(DWORD* handle) {
@@ -85,7 +88,10 @@ BOOL gapless_stream_registry_peek(DWORD* handle) {
 		return FALSE;
 	}
 	success = queue_peek(queue, (void**)handle);
-	gapless_steam_registry_raise(success, *handle);
+	if (gapless_steam_registry_raise(success, *handle)) {
+		//If we raised an event we should re-check the queue, a handler may have prevented a stall.
+		success = queue_peek(queue, (void**)handle);
+	}
 	return success;
 }
 

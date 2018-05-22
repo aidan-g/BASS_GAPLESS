@@ -107,7 +107,8 @@ namespace ManagedBass.Gapless
     public enum BassGaplessAttriubute
     {
         None = 0,
-        KeepAlive = 1
+        KeepAlive = 1,
+        BlockingEvents = 2
     }
 
     public enum BassGaplessEventType
@@ -118,14 +119,12 @@ namespace ManagedBass.Gapless
         End = 3
     }
 
-#pragma warning disable 0169
     public struct BassGaplessEventArgs
     {
         public BassGaplessEventType EventType;
-        int Channel1;
-        int Channel2;
+        public int Channel1;
+        public int Channel2;
     }
-#pragma warning restore 0169
 
     public delegate void BassGaplessEventProcedure(BassGaplessEventArgs e);
 }

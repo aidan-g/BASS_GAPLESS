@@ -1,3 +1,7 @@
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 #include "bass_gapless_asio.h"
 #include "../bass_gapless/gapless_stream.h"
 #include "../bass/bassasio.h"

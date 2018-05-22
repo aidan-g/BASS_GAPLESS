@@ -19,7 +19,7 @@ BOOL gapless_config_set(GS_ATTRIBUTE attrib, DWORD value) {
 BOOL gapless_config_get(GS_ATTRIBUTE attrib, DWORD* value) {
 	if (*value = config[attrib]) {
 #if _DEBUG
-		printf("Getting config: %d = %d\n", attrib, value);
+		printf("Getting config: %d = %d\n", attrib, *value);
 #endif
 		return TRUE;
 	}

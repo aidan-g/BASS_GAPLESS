@@ -9,7 +9,8 @@
 
 typedef enum {
 	NONE = 0,
-	KEEP_ALIVE = 1
+	KEEP_ALIVE = 1,
+	BLOCKING_EVENTS = 2
 } GS_ATTRIBUTE;
 
 typedef enum {

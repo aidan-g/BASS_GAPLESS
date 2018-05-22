@@ -362,5 +362,43 @@ namespace ManagedBass.Gapless.Test
                 Bass.Free();
             }
         }
+
+        [Test]
+        public void Test007()
+        {
+
+            try
+            {
+                if (!Bass.Init(Bass.NoSoundDevice, 44100))
+                {
+                    Assert.Fail(string.Format("Failed to initialize BASS: {0}", Enum.GetName(typeof(Errors), Bass.LastError)));
+                }
+
+                if (!BassGapless.Init())
+                {
+                    Assert.Fail("Failed to initialize GAPLESS.");
+                }
+
+                BassGapless.SetConfig(BassGaplessAttriubute.KeepAlive, true);
+                BassGapless.SetConfig(BassGaplessAttriubute.BlockingEvents, true);
+
+                {
+                    var value = default(int);
+                    BassGapless.GetConfig(BassGaplessAttriubute.KeepAlive, out value);
+                    Assert.AreEqual(Convert.ToInt32(true), value);
+                }
+
+                {
+                    var value = default(int);
+                    BassGapless.GetConfig(BassGaplessAttriubute.BlockingEvents, out value);
+                    Assert.AreEqual(Convert.ToInt32(true), value);
+                }
+            }
+            finally
+            {
+                BassGapless.Free();
+                Bass.Free();
+            }
+        }
     }
 }
