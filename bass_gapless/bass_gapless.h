@@ -10,7 +10,8 @@
 typedef enum {
 	NONE = 0,
 	KEEP_ALIVE = 1,
-	BLOCKING_EVENTS = 2
+	BLOCKING_EVENTS = 2,
+	RECYCLE_STREAM = 4
 } GS_ATTRIBUTE;
 
 typedef enum {

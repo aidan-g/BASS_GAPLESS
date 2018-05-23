@@ -108,7 +108,8 @@ namespace ManagedBass.Gapless
     {
         None = 0,
         KeepAlive = 1,
-        BlockingEvents = 2
+        BlockingEvents = 2,
+        RecycleStream = 4
     }
 
     public enum BassGaplessEventType

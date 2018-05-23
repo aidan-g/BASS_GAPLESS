@@ -32,7 +32,9 @@ DWORD gapless_stream_proc(void *buffer, DWORD length) {
 	DWORD handle;
 	DWORD keep_alive;
 	gapless_config_get(KEEP_ALIVE, &keep_alive);
-	while (gapless_stream_registry_peek(&handle)) {
+	
+	//Check the queue twice in case an event handler re-populated it.
+	while (gapless_stream_registry_peek(&handle) || gapless_stream_registry_peek(&handle)) {
 		if (BASS_ChannelIsActive(handle) == BASS_ACTIVE_PLAYING) {
 			DWORD read = BASS_ChannelGetData(handle, offset_buffer(buffer, position), remaining);
 			if (!read) {
