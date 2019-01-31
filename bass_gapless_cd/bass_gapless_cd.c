@@ -8,6 +8,13 @@ DWORD current_drive = NO_DRIVE;
 
 DWORD current_flags = BASS_DEFAULT;
 
+//I have no idea how to prevent linking against this routine in msvcrt.
+//It doesn't exist on Windows XP.
+//Hopefully it doesn't do anything important.
+int _except_handler4_common() {
+	return 0;
+}
+
 BOOL BASSGAPLESSCDDEF(BASS_GAPLESS_CD_Init)() {
 	if (is_initialized) {
 		return FALSE;

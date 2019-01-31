@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bass_gapless_asio", "bass_gapless_asio\bass_gapless_asio.vcxproj", "{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBass.Gapless", "ManagedBass.Gapless\ManagedBass.Gapless.csproj", "{996A7265-21AF-45E8-B697-05E7B2375EBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagedBass.Gapless", "ManagedBass.Gapless\ManagedBass.Gapless.csproj", "{996A7265-21AF-45E8-B697-05E7B2375EBC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E612BC45-E1B1-4F71-8DCC-60ECC41B7596} = {E612BC45-E1B1-4F71-8DCC-60ECC41B7596}
 	EndProjectSection
@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBass.Gapless.Asio.Te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bass_gapless_cd", "bass_gapless_cd\bass_gapless_cd.vcxproj", "{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBass.Gapless.Cd", "ManagedBass.Gapless.Cd\ManagedBass.Gapless.Cd.csproj", "{ECDCE0CD-E0D8-4E28-A25A-20C1562E29C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagedBass.Gapless.Cd", "ManagedBass.Gapless.Cd\ManagedBass.Gapless.Cd.csproj", "{ECDCE0CD-E0D8-4E28-A25A-20C1562E29C9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F} = {11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}
 	EndProjectSection
@@ -47,16 +47,16 @@ Global
 		Release|Mixed Platforms = Release|Mixed Platforms
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E612BC45-E1B1-4F71-8DCC-60ECC41B7596}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{E612BC45-E1B1-4F71-8DCC-60ECC41B7596}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{E612BC45-E1B1-4F71-8DCC-60ECC41B7596}.Debug|Mixed Platforms.ActiveCfg = Release|Win32
+		{E612BC45-E1B1-4F71-8DCC-60ECC41B7596}.Debug|Mixed Platforms.Build.0 = Release|Win32
 		{E612BC45-E1B1-4F71-8DCC-60ECC41B7596}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{E612BC45-E1B1-4F71-8DCC-60ECC41B7596}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{3859B1EB-3352-45EF-BB2D-E72F4024FCF9}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{3859B1EB-3352-45EF-BB2D-E72F4024FCF9}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{3859B1EB-3352-45EF-BB2D-E72F4024FCF9}.Release|Mixed Platforms.ActiveCfg = Debug|Win32
 		{3859B1EB-3352-45EF-BB2D-E72F4024FCF9}.Release|Mixed Platforms.Build.0 = Debug|Win32
-		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Debug|Mixed Platforms.ActiveCfg = Release|Win32
+		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Debug|Mixed Platforms.Build.0 = Release|Win32
 		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{75F6392B-69C7-4EF0-A12B-FCE676FBDDB3}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{996A7265-21AF-45E8-B697-05E7B2375EBC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -75,8 +75,8 @@ Global
 		{7ED7AEFA-85C3-47DC-9211-7FAD7A1D48FB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{7ED7AEFA-85C3-47DC-9211-7FAD7A1D48FB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7ED7AEFA-85C3-47DC-9211-7FAD7A1D48FB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}.Debug|Mixed Platforms.ActiveCfg = Release|Win32
+		{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}.Debug|Mixed Platforms.Build.0 = Release|Win32
 		{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{11AABA8A-A8A3-4F47-8DBE-C77CEA9D2A4F}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{ECDCE0CD-E0D8-4E28-A25A-20C1562E29C9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
