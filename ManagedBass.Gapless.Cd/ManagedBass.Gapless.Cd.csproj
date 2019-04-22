@@ -4,6 +4,8 @@
     <TargetFrameworks>net40;net461</TargetFrameworks>
     <AssemblyName>ManagedBass.Gapless.Cd</AssemblyName>
     <OutputPath>..\distribution\</OutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,4 +24,18 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="ManagedBass.Gapless.Cd.targets" PackagePath="build">
+      <pack>true</pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\lib\bass_gapless_cd.dll" Link="bass_gapless_cd.dll" PackagePath="build">
+      <Pack>true</Pack>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>
