@@ -30,8 +30,16 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\lib\bass_gapless_cd.dll" Link="bass_gapless_cd.dll" PackagePath="build">
+  <ItemGroup Condition="'$(Platform)' == 'x86'">
+    <None Include="..\lib\x86\bass_gapless_cd.dll" Link="bass_gapless_cd.dll" PackagePath="build">
+      <Pack>true</Pack>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Platform)' == 'x64'">
+    <None Include="..\lib\x64\bass_gapless_cd.dll" Link="bass_gapless_cd.dll" PackagePath="build">
       <Pack>true</Pack>
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,6 +1,6 @@
 ﻿<Project>
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)\bass_gapless.dll" Link="bass_gapless.dll">
+		<None Include="$(MSBuildThisFileDirectory)\$(Platform)\bass_gapless.dll" Link="$(Platform)\bass_gapless.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
