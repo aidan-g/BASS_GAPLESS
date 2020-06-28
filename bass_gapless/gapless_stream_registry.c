@@ -35,7 +35,7 @@ BOOL gapless_stream_registry_enqueue(DWORD handle) {
 #if _DEBUG
 	printf("Enqueuing channel: %d\n", handle);
 #endif
-	return queue_enqueue(queue, (void*)handle);
+	return queue_enqueue(queue, (void*)handle, TRUE);
 }
 
 BOOL gapless_stream_registry_dequeue(DWORD* handle) {
@@ -125,7 +125,7 @@ DWORD* gapless_stream_registry_get_all(DWORD* length) {
 	if (!queue) {
 		return NULL;
 	}
-	if (!queue_get_all(queue, (void**)buffer, length)) {
+	if (!queue_get_all(queue, (void**)buffer, sizeof(DWORD), length)) {
 		*length = 0;
 	}
 	return buffer;

@@ -19,7 +19,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Media\" />
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Media\01 Botanical Dimensions.m4a" Link="Media\01 Botanical Dimensions.m4a">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Media\02 Outer Shpongolia.m4a" Link="Media\02 Outer Shpongolia.m4a">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
